@@ -1,4 +1,4 @@
-package pt.paulinoo.mediagetter.pt.paulinoo.mediagetter.ui.theme
+package pt.paulinoo.mediagetter.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

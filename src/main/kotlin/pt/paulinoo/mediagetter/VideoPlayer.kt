@@ -1,4 +1,4 @@
-package pt.paulinoo.mediagetter.pt.paulinoo.mediagetter
+package pt.paulinoo.mediagetter
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect

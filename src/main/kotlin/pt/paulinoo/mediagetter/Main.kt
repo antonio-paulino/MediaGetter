@@ -23,7 +23,7 @@ import com.github.kiulian.downloader.model.search.*
 import com.github.kiulian.downloader.model.search.field.*
 import com.github.kiulian.downloader.model.videos.formats.Format
 import kotlinx.coroutines.*
-import pt.paulinoo.mediagetter.pt.paulinoo.mediagetter.ui.theme.MediaGetterTheme
+import pt.paulinoo.mediagetter.ui.theme.MediaGetterTheme
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
