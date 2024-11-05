@@ -1,10 +1,12 @@
-package pt.paulinoo.mediagetter.pt.paulinoo.mediagetter
+package pt.paulinoo.mediagetter
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -186,6 +188,8 @@ fun App() {
     }
 }
 
+
+
 @Composable
 fun SearchSection(
     query: String,
@@ -195,15 +199,30 @@ fun SearchSection(
     onResultClick: (String) -> Unit,
     isLoading: Boolean // New parameter to indicate loading state
 ) {
+    val customTextSelectionColors = TextSelectionColors(
+        handleColor = MaterialTheme.colors.onBackground, // The color of the selection handles
+        backgroundColor = MaterialTheme.colors.background // The color of the text highlight
+    )
     Column {
-        TextField(
-            value = query,
-            onValueChange = onQueryChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            placeholder = { Text("Search YouTube") },
-        )
+        CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+            TextField(
+                value = query,
+                onValueChange = onQueryChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                placeholder = { Text("Search YouTube") },
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = MaterialTheme.colors.onBackground,
+                    unfocusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled),
+                    unfocusedLabelColor = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium),
+                    placeholderColor = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium),
+                )
+            )
+        }
+
+
+
         Spacer(Modifier.height(8.dp))
         Button(onClick = onSearch, enabled = !isLoading) {
             Text("Search")
@@ -218,7 +237,7 @@ fun SearchSection(
                         .fillMaxWidth()
                         .padding(8.dp)
                         .clickable { onResultClick("https://www.youtube.com/watch?v=${result.asVideo().videoId()}") },
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     AsyncImage(
                         model = fetchThumbnail(result.asVideo().videoId()),
@@ -227,6 +246,7 @@ fun SearchSection(
                             .size(150.dp)
                             .clip(RoundedCornerShape(8.dp))
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         result.asVideo().title(),
                         modifier = Modifier.weight(1f),
@@ -255,14 +275,27 @@ fun UrlDownloadSection(
 ) {
     var selectedVideoFormat by remember { mutableStateOf("") }
     var selectedAudioFormat by remember { mutableStateOf("") }
+    val customTextSelectionColors = TextSelectionColors(
+        handleColor = MaterialTheme.colors.onBackground, // The color of the selection handles
+        backgroundColor = MaterialTheme.colors.background // The color of the text highlight
+    )
+
     Column {
-        TextField(
-            value = url,
-            onValueChange = onUrlChange,
-            placeholder = { Text("Paste YouTube URL here") },
-            isError = !isValidUrl(url),
-            modifier = Modifier.fillMaxWidth()
-        )
+        CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+            TextField(
+                value = url,
+                onValueChange = onUrlChange,
+                placeholder = { Text("Paste YouTube URL here") },
+                isError = !isValidUrl(url),
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = MaterialTheme.colors.onBackground,
+                    unfocusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled),
+                    unfocusedLabelColor = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium),
+                    placeholderColor = MaterialTheme.colors.onSurface.copy(ContentAlpha.medium),
+                )
+            )
+        }
         if (!isValidUrl(url)) {
             Text("Invalid URL. Please enter a valid YouTube link.", color = MaterialTheme.colors.error)
         }

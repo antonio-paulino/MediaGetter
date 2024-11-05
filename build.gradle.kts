@@ -32,7 +32,7 @@ tasks.test {
     useJUnitPlatform()
 }
 kotlin {
-    jvmToolchain(22)
+    jvmToolchain(21)
 }
 
 compose.desktop {
@@ -45,4 +45,25 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+tasks.register<Jar>("uberJar") {
+    archiveClassifier.set("uber")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes["Main-Class"] = "pt.paulinoo.mediagetter.MainKt"
+    }
+    from(sourceSets.main.get().output)
+
+    // Include runtime dependencies
+    from(configurations.runtimeClasspath.get().map {
+        if (it.isDirectory) it else zipTree(it)
+    })
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "pt.paulinoo.mediagetter.MainKt"
+    }
+    from(sourceSets.main.get().output)
 }
