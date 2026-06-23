@@ -32,6 +32,7 @@ import java.awt.EventQueue
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import javax.swing.JFileChooser
+import kotlin.time.Duration.Companion.milliseconds
 
 class MainViewModel {
 
@@ -376,7 +377,7 @@ class MainViewModel {
                         scope.launch { runTask(next) }
                     }
                     next == null && running == 0 -> break
-                    else -> delay(150)
+                    else -> delay(150.milliseconds)
                 }
             }
         }
