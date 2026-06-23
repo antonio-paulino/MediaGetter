@@ -1,38 +1,35 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("jvm") version "2.0.20"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.20"
-    id("org.jetbrains.compose") version "1.7.0"
+    kotlin("jvm") version "2.4.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.0"
+    id("org.jetbrains.compose") version "1.11.1"
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = "pt.paulinoo"
+version = "2.0.0"
 
 repositories {
     google()
     mavenCentral()
-    gradlePluginPortal()
-    maven{ url = uri("https://jitpack.io") }
 }
 
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation("uk.co.caprica:vlcj:4.8.3")
-    implementation("com.github.sealedtx:java-youtube-downloader:3.2.6")
-    implementation("commons-io:commons-io:2.17.0")
-    implementation("io.coil-kt.coil3:coil-compose:3.0.0-rc02")
-    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.0-rc02")
-    implementation("org.slf4j:slf4j-simple:2.0.16")
-    implementation("org.slf4j:slf4j-api:2.0.16")
-    testImplementation(kotlin("test"))
-}
 
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(21)
+    implementation(compose.material3)
+    implementation(compose.materialIconsExtended)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
+
+    implementation("io.coil-kt.coil3:coil-compose:3.5.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.5.0")
+
+    implementation("com.squareup.okhttp3:okhttp:5.4.0")
+
+    implementation("org.json:json:20260522")
+
+    implementation("org.slf4j:slf4j-simple:2.0.18")
 }
 
 compose.desktop {
@@ -40,14 +37,27 @@ compose.desktop {
         mainClass = "pt.paulinoo.mediagetter.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.AppImage)
-            packageName = "mediagetter"
-            packageVersion = "1.0.0"
+            targetFormats(TargetFormat.Msi, TargetFormat.Exe)
+            packageName = "MediaGetter"
+            packageVersion = project.version.toString()
+            description = "Descarrega vídeo e áudio do YouTube"
+            vendor = "paulinoo"
+
+            windows {
+                iconFile.set(project.file("icons/MediaGetter.ico"))
+                // Required so future versions upgrade the same install (keep stable).
+                upgradeUuid = "f5e2d123-7994-4205-b3f2-48daac505b1d"
+                menuGroup = "MediaGetter"
+                shortcut = true
+                dirChooser = true
+            }
         }
     }
 }
 
+
 tasks.register<Jar>("uberJar") {
+    description = "Creates an uber JAR with all dependencies included."
     archiveClassifier.set("uber")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
